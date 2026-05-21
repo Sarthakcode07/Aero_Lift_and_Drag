@@ -62,7 +62,7 @@ def main() -> None:
         velocity = st.slider(
             "Velocity (m/s)",
             min_value=0.0,
-            max_value=velocity_max,
+            max_value=max(velocity_max, 1000.0),
             value=velocity_default,
             step=1.0,
         )
