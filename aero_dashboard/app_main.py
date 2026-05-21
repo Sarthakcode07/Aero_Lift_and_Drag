@@ -6,7 +6,7 @@ from aero_dashboard import visuals, agent
 
 def main() -> None:
     st.set_page_config(
-        page_title="Sarthak's Aerodynamic Website",
+        page_title="Aero Lift & Drag Simulator",
         page_icon="✈️",
         layout="wide",
     )
@@ -115,12 +115,18 @@ def main() -> None:
         runway_length = st.number_input(
             "Available runway length (m)", min_value=50, max_value=5000, value=800, step=10
         )
-        payload_kg = st.number_input(
-            "Payload + fuel (kg)", min_value=0, max_value=50000, value=100, step=10
+        aircraft_weight_kg = st.number_input(
+            "Aircraft weight (kg)",
+            min_value=100.0,
+            max_value=200000.0,
+            value=float(profile.get("empty_weight_kg", 1000.0)),
+            step=10.0,
         )
-        # Estimate a default thrust as a fraction of weight if empty_weight known
-        est_empty = profile.get("empty_weight_kg") or 1000.0
-        est_total = est_empty + float(payload_kg)
+        payload_kg = st.number_input(
+            "Payload + fuel (kg)", min_value=0.0, max_value=50000.0, value=100.0, step=10.0
+        )
+        # Estimate a default thrust as a fraction of the loaded weight
+        est_total = aircraft_weight_kg + float(payload_kg)
         default_thrust = float(est_total * 9.81 * 0.2)
         thrust_n = st.number_input(
             "Available thrust (N)", min_value=0.0, max_value=1e6, value=default_thrust, step=100.0
@@ -186,7 +192,7 @@ def main() -> None:
                 lift_coefficient,
                 drag_coefficient,
                 ld_ratio,
-                empty_weight_kg=profile.get("empty_weight_kg"),
+                empty_weight_kg=aircraft_weight_kg,
             ),
             unsafe_allow_html=True,
         )
@@ -229,9 +235,8 @@ def main() -> None:
     st.divider()
     st.markdown(visuals.section_heading("Takeoff Performance Simulator"), unsafe_allow_html=True)
 
-    # Compute total weight from profile + payload
-    empty_w = profile.get("empty_weight_kg") or 1000.0
-    total_weight = empty_w + float(payload_kg)
+    # Compute total weight from aircraft weight + payload
+    total_weight = float(aircraft_weight_kg) + float(payload_kg)
 
     sim_col, sim_out = st.columns([2, 1])
     with sim_col:

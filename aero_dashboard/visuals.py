@@ -1,28 +1,29 @@
 import matplotlib.pyplot as plt
+import streamlit as st
 from typing import Tuple
 
 # Visual constants
-BG_MAIN = "#0a0e17"
-BG_SIDEBAR = "#0f1623"
+BG_MAIN = "#f4f7fb"
+BG_SIDEBAR = "#dde5ef"
 BG_CARD_GRADIENT = (
-    "linear-gradient(155deg, #3d4f66 0%, #4d6178 48%, #42566c 100%)"
+    "linear-gradient(155deg, #ffffff 0%, #f2f5fb 48%, #e7eef8 100%)"
 )
-BG_CARD_BORDER = "#6b7f96"
-TEXT_WHITE = "#ffffff"
+BG_CARD_BORDER = "#cbd5e1"
+TEXT_WHITE = "#0f172a"
 TEXT_PRIMARY = TEXT_WHITE
 TEXT_MUTED = TEXT_WHITE
 TEXT_DIM = TEXT_WHITE
 TEXT_ON_CARD_LABEL = TEXT_WHITE
 TEXT_ON_CARD_VALUE = TEXT_WHITE
-ACCENT_SKY = "#38bdf8"
-ACCENT_CYAN = "#22d3ee"
-ACCENT_AMBER = "#f59e0b"
-ACCENT_WARNING = "#ef4444"
-PLOT_LIFT = "#38bdf8"
-PLOT_DRAG = "#22d3ee"
-PLOT_MARKER = "#f59e0b"
-PLOT_BG = "#0f172a"
-PLOT_PANEL = "#151d2e"
+ACCENT_SKY = "#1d4ed8"
+ACCENT_CYAN = "#2563eb"
+ACCENT_AMBER = "#d97706"
+ACCENT_WARNING = "#b91c1c"
+PLOT_LIFT = "#1d4ed8"
+PLOT_DRAG = "#2563eb"
+PLOT_MARKER = "#d97706"
+PLOT_BG = "#eef2ff"
+PLOT_PANEL = "#ffffff"
 FONT_STACK = "'Segoe UI', 'Inter', system-ui, -apple-system, sans-serif"
 
 
@@ -196,7 +197,7 @@ def settings_card(
         ("L/D ratio", f"{ld_ratio:.2f}"),
     ]
     if empty_weight_kg is not None:
-        items.insert(2, ("Empty weight", f"{empty_weight_kg:,.0f} kg"))
+        items.insert(2, ("Aircraft weight", f"{empty_weight_kg:,.0f} kg"))
 
     rows = "".join(row(l, v) for l, v in items)
     return f"""
@@ -233,6 +234,53 @@ def section_heading(text: str) -> str:
         margin: 0 0 0.5rem 0;
     ">{text}</p>
     """
+
+
+def apply_aerospace_theme() -> None:
+    st.markdown(
+        f"""
+        <style>
+            html, body, .stApp, .main, .block-container, [data-testid="stSidebar"] > div:first-child {{
+                background-color: {BG_MAIN} !important;
+                color: {TEXT_WHITE} !important;
+            }}
+            [data-testid="stSidebar"] > div:first-child {{
+                background-color: {BG_SIDEBAR} !important;
+            }}
+            .css-1d391kg, .css-1rww9jb, .css-13sdm1k, .css-1n4tgyf {{
+                background-color: {PLOT_PANEL} !important;
+                color: {TEXT_WHITE} !important;
+            }}
+            body * {{
+                color: {TEXT_WHITE} !important;
+            }}
+            input, textarea, select, option,
+            .stTextInput input, .stNumberInput input, .stTextArea textarea,
+            .stTextInput>div, .stNumberInput>div, .stTextArea>div,
+            .stSelectbox > div, .stSelectbox select, .stSelectbox option,
+            .stSlider, .stSlider input, .stSlider>div {{
+                color: #000000 !important;
+            }}
+            select, option {{
+                color: #000000 !important;
+            }}
+            input::placeholder, textarea::placeholder {{
+                color: #000000 !important;
+                opacity: 0.7 !important;
+            }}
+            .stButton>button {{
+                border-radius: 0.65rem !important;
+            }}
+            .stButton>button, .stMarkdown, .element-container, label, span, p, h1, h2, h3, h4, h5, h6 {{
+                color: {TEXT_WHITE} !important;
+            }}
+            .css-1e5imcs {{
+                color: {TEXT_WHITE} !important;
+            }}
+        </style>
+        """,
+        unsafe_allow_html=True,
+    )
 
 
 def simulate_takeoff(
