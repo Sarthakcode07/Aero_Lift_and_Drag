@@ -60,37 +60,48 @@ def render_signin_card() -> None:
         unsafe_allow_html=True,
     )
 
-    username = st.text_input("Username", key="signin_username")
-    password = st.text_input("Password", type="password", key="signin_password")
-    remember = st.checkbox("Remember me", key="signin_remember")
+    with st.form("signin_form"):
+        username = st.text_input("Username", key="signin_username")
+        password = st.text_input("Password", type="password", key="signin_password")
+        remember = st.checkbox("Remember me", key="signin_remember")
 
-    col1, col2 = st.columns([1, 1])
-    with col1:
-        if st.button("Sign in", key="auth_signin"):
-            if not username.strip():
-                st.error("Please enter a username.")
+        col1, col2 = st.columns([1, 1])
+        with col1:
+            submitted = st.form_submit_button("Sign in")
+        with col2:
+            guest = st.form_submit_button("Continue as Guest")
+
+    if submitted:
+        if not username.strip():
+            st.error("Please enter a username.")
+        else:
+            try:
+                ok = _auth_check(username.strip(), password)
+            except Exception as exc:
+                st.error(f"Authentication error: {exc}")
+                ok = False
+
+            if ok:
+                st.session_state["user"] = username.strip()
+                st.session_state["show_signin"] = False
+                st.session_state["signin_username"] = ""
+                st.session_state["signin_password"] = ""
+                st.session_state["signin_remember"] = False
+                if remember:
+                    st.session_state["remember"] = True
+                st.success(f"Signed in as {st.session_state['user']}")
+                st.experimental_rerun()
             else:
-                try:
-                    ok = _auth_check(username.strip(), password)
-                except Exception as exc:
-                    st.error(f"Authentication error: {exc}")
-                    ok = False
+                st.error("Invalid username or password.")
 
-                if ok:
-                    st.session_state["user"] = username.strip()
-                    st.session_state["show_signin"] = False
-                    if remember:
-                        st.session_state["remember"] = True
-                    st.success(f"Signed in as {st.session_state['user']}")
-                    st.rerun()
-                else:
-                    st.error("Invalid username or password.")
-    with col2:
-        if st.button("Continue as Guest", key="auth_guest"):
-            st.session_state["user"] = "guest"
-            st.session_state["show_signin"] = False
-            st.info("Continuing as guest")
-            st.rerun()
+    if guest:
+        st.session_state["user"] = "guest"
+        st.session_state["show_signin"] = False
+        st.session_state["signin_username"] = ""
+        st.session_state["signin_password"] = ""
+        st.session_state["signin_remember"] = False
+        st.info("Continuing as guest")
+        st.experimental_rerun()
 
     try:
         if st.secrets.get("users"):
