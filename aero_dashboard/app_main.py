@@ -21,6 +21,24 @@ def main() -> None:
     if site_header:
         site_header()
 
+    # Top-right Sign in / Switch user button
+    try:
+        header_cols = st.columns([8, 1])
+        with header_cols[1]:
+            current_user = st.session_state.get("user")
+            if current_user:
+                st.markdown(f"**{current_user}**")
+                if st.button("Switch user"):
+                    st.session_state.pop("user", None)
+                    st.experimental_rerun()
+            else:
+                if st.button("Sign in"):
+                    st.session_state.pop("user", None)
+                    st.experimental_rerun()
+    except Exception:
+        # If session state isn't available for any reason, ignore header button
+        pass
+
     # Aircraft presets for `Select Aircraft Profile`
     aircraft_presets = {
         "Cessna 172": {
