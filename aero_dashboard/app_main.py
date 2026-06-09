@@ -1,7 +1,7 @@
 import streamlit as st
 import matplotlib.pyplot as plt
 
-from aero_dashboard import visuals, agent
+from aero_dashboard import auth, visuals, agent
 
 
 def main() -> None:
@@ -10,6 +10,19 @@ def main() -> None:
         page_icon="✈️",
         layout="wide",
     )
+
+    if auth.current_user() is None:
+        st.markdown("# Access Restricted")
+        st.markdown("Please sign in to access the aerodynamic simulator.")
+        if st.button("Sign in"):
+            st.session_state["show_signin"] = True
+            st.experimental_rerun()
+
+        if st.session_state.get("show_signin"):
+            auth.render_signin_card()
+
+        return
+
     # inject styling
     st.markdown(visuals._style_axes.__doc__ or "", unsafe_allow_html=True)
     # NOTE: we still call visuals functions directly for markup
@@ -38,6 +51,10 @@ def main() -> None:
     except Exception:
         # If session state isn't available for any reason, ignore header button
         pass
+
+    if st.sidebar.button("Sign out"):
+        auth.sign_out()
+        return
 
     # Aircraft presets for `Select Aircraft Profile`
     aircraft_presets = {
