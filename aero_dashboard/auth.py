@@ -25,10 +25,21 @@ def current_user() -> str | None:
 def sign_out() -> None:
     st.session_state.pop("user", None)
     st.session_state.pop("show_signin", None)
+    st.session_state.pop("signin_username", None)
+    st.session_state.pop("signin_password", None)
+    st.session_state.pop("signin_remember", None)
     return
 
 
 def render_signin_card() -> None:
+    # Clear form fields for fresh login
+    if "signin_username" not in st.session_state:
+        st.session_state["signin_username"] = ""
+    if "signin_password" not in st.session_state:
+        st.session_state["signin_password"] = ""
+    if "signin_remember" not in st.session_state:
+        st.session_state["signin_remember"] = False
+    
     st.markdown(
         """
         <style>
