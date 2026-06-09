@@ -34,13 +34,27 @@ pip install -r requirements.txt
 
 ## Running the App
 
-Start the dashboard with:
+Start the aerodynamic dashboard with either of these:
+
+```bash
+python app.py
+```
+
+or
 
 ```bash
 python run_app.py
 ```
 
+Start the professional email agent website with:
+
+```bash
+streamlit run email_agent_app.py
+```
+
 Then open the displayed Streamlit URL in your browser.
+
+Note: The app now includes a home page where users can sign in or continue as a guest before accessing the dashboard.
 
 ## Ollama AI Agent
 
