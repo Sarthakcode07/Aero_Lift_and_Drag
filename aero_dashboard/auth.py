@@ -70,14 +70,14 @@ def render_signin_card() -> None:
                     if remember:
                         st.session_state["remember"] = True
                     st.success(f"Signed in as {st.session_state['user']}")
-                    return
+                    st.rerun()
                 else:
                     st.error("Invalid username or password.")
     with col2:
         if st.button("Continue as Guest", key="auth_guest"):
             st.session_state["user"] = "guest"
             st.info("Continuing as guest")
-            return
+            st.rerun()
 
     try:
         if st.secrets.get("users"):
