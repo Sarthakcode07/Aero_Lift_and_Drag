@@ -16,7 +16,7 @@ def main() -> None:
         st.markdown("Please sign in to access the aerodynamic simulator.")
         if st.button("Sign in"):
             st.session_state["show_signin"] = True
-            st.experimental_rerun()
+            return
 
         if st.session_state.get("show_signin"):
             auth.render_signin_card()
@@ -43,11 +43,11 @@ def main() -> None:
                 st.markdown(f"**{current_user}**")
                 if st.button("Switch user"):
                     st.session_state.pop("user", None)
-                    st.experimental_rerun()
+                    return
             else:
                 if st.button("Sign in"):
                     st.session_state.pop("user", None)
-                    st.experimental_rerun()
+                    return
     except Exception:
         # If session state isn't available for any reason, ignore header button
         pass
@@ -380,6 +380,6 @@ def main() -> None:
                         rho, velocity, wing_area, lift_coefficient, drag_coefficient, lift_n, drag_n, ld_ratio
                     ), history_text, model=model_to_use)
                     st.session_state["aero_conversation_history"].append({"question": question.strip(), "answer": answer})
-                    st.experimental_rerun()
+                    return
                 except Exception as exc:
                     st.error(f"Agent error: {exc}")

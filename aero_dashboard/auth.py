@@ -25,7 +25,7 @@ def current_user() -> str | None:
 def sign_out() -> None:
     st.session_state.pop("user", None)
     st.session_state.pop("show_signin", None)
-    st.experimental_rerun()
+    return
 
 
 def render_signin_card() -> None:
@@ -70,14 +70,14 @@ def render_signin_card() -> None:
                     if remember:
                         st.session_state["remember"] = True
                     st.success(f"Signed in as {st.session_state['user']}")
-                    st.experimental_rerun()
+                    return
                 else:
                     st.error("Invalid username or password.")
     with col2:
         if st.button("Continue as Guest"):
             st.session_state["user"] = "guest"
             st.info("Continuing as guest")
-            st.experimental_rerun()
+            return
 
     try:
         if st.secrets.get("users"):

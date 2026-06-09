@@ -11,7 +11,7 @@ def main() -> None:
 
         if st.button("Sign in"):
             st.session_state["show_signin"] = True
-            st.experimental_rerun()
+            return
 
         if st.session_state.get("show_signin"):
             auth.render_signin_card()
