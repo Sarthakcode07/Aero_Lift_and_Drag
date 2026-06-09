@@ -67,6 +67,7 @@ def render_signin_card() -> None:
 
                 if ok:
                     st.session_state["user"] = username.strip()
+                    st.session_state["show_signin"] = False
                     if remember:
                         st.session_state["remember"] = True
                     st.success(f"Signed in as {st.session_state['user']}")
@@ -76,6 +77,7 @@ def render_signin_card() -> None:
     with col2:
         if st.button("Continue as Guest", key="auth_guest"):
             st.session_state["user"] = "guest"
+            st.session_state["show_signin"] = False
             st.info("Continuing as guest")
             st.rerun()
 
