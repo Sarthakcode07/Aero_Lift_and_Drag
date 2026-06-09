@@ -55,7 +55,7 @@ def render_signin_card() -> None:
 
     col1, col2 = st.columns([1, 1])
     with col1:
-        if st.button("Sign in"):
+        if st.button("Sign in", key="auth_signin"):
             if not username.strip():
                 st.error("Please enter a username.")
             else:
@@ -74,7 +74,7 @@ def render_signin_card() -> None:
                 else:
                     st.error("Invalid username or password.")
     with col2:
-        if st.button("Continue as Guest"):
+        if st.button("Continue as Guest", key="auth_guest"):
             st.session_state["user"] = "guest"
             st.info("Continuing as guest")
             return

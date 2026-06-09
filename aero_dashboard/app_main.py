@@ -14,7 +14,7 @@ def main() -> None:
     if auth.current_user() is None:
         st.markdown("# Access Restricted")
         st.markdown("Please sign in to access the aerodynamic simulator.")
-        if st.button("Sign in"):
+        if st.button("Sign in", key="page_signin"):
             st.session_state["show_signin"] = True
             return
 
