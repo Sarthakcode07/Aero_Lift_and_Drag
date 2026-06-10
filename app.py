@@ -10,8 +10,10 @@ def main() -> None:
         st.markdown("Click the button below to sign in and access the simulator.")
 
         if st.button("Sign in"):
-            st.session_state["show_signin"] = True
-            return
+            # Immediately continue as guest and show dashboard
+            st.session_state["user"] = "guest"
+            st.session_state["show_signin"] = False
+            st.experimental_rerun()
 
         if st.session_state.get("show_signin"):
             auth.render_signin_card()

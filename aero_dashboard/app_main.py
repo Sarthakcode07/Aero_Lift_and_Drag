@@ -15,8 +15,10 @@ def main() -> None:
         st.markdown("# Access Restricted")
         st.markdown("Please sign in to access the aerodynamic simulator.")
         if st.button("Sign in", key="page_signin"):
-            st.session_state["show_signin"] = True
-            return
+            # Immediately continue as guest and show dashboard
+            st.session_state["user"] = "guest"
+            st.session_state["show_signin"] = False
+            st.experimental_rerun()
 
         if st.session_state.get("show_signin"):
             auth.render_signin_card()
