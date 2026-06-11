@@ -18,34 +18,16 @@ def main() -> None:
             auth.render_signin_card()
         return
 
-    profile = auth.get_user_profile(auth.current_user())
     st.markdown(
-        visuals.section_heading("Pilot overview"),
+        visuals.section_heading("Dashboard overview"),
         unsafe_allow_html=True,
     )
     st.markdown(
         f"""
-        <div style='display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:1.5rem;'>
-            <div style='flex:1;min-width:260px;padding:1.25rem;border-radius:16px;
-                background:rgba(255,255,255,0.05);border:1px solid rgba(148,163,184,0.12);'>
-                <p style='margin:0;font-size:0.9rem;color:#cbd5e1;'>Welcome back,</p>
-                <h2 style='margin:0.45rem 0 0 0;font-size:1.85rem;color:#ffffff;'>{profile['display_name']}</h2>
-                <p style='margin:0.25rem 0 0 0;color:#94a3b8;'>{profile['summary']}</p>
-            </div>
-            <div style='flex:1;min-width:220px;padding:1.25rem;border-radius:16px;
-                background:rgba(255,255,255,0.05);border:1px solid rgba(148,163,184,0.12);'>
-                <p style='margin:0 0 0.5rem 0;font-size:0.75rem;color:#cbd5e1;text-transform:uppercase;letter-spacing:0.14em;'>Pilot alias</p>
-                <p style='margin:0;font-size:1.2rem;color:#ffffff;font-weight:700;'>{profile['pilot_alias']}</p>
-                <p style='margin:0.85rem 0 0 0;font-size:0.75rem;color:#94a3b8;'>Preferred aircraft</p>
-                <p style='margin:0.15rem 0 0 0;font-size:1rem;color:#ffffff;font-weight:600;'>{profile['preferred_aircraft']}</p>
-            </div>
-            <div style='flex:1;min-width:220px;padding:1.25rem;border-radius:16px;
-                background:rgba(255,255,255,0.05);border:1px solid rgba(148,163,184,0.12);'>
-                <p style='margin:0 0 0.5rem 0;font-size:0.75rem;color:#cbd5e1;text-transform:uppercase;letter-spacing:0.14em;'>Session status</p>
-                <p style='margin:0;font-size:1rem;color:#ffffff;font-weight:700;'>Recent: {profile['recent_session']}</p>
-                <p style='margin:0.85rem 0 0 0;font-size:0.75rem;color:#94a3b8;'>Saved presets</p>
-                <p style='margin:0.15rem 0 0 0;font-size:1rem;color:#ffffff;font-weight:600;'>{profile['saved_presets']}</p>
-            </div>
+        <div style='margin-bottom:1.5rem;padding:1.25rem;border-radius:16px;
+            background:rgba(255,255,255,0.05);border:1px solid rgba(148,163,184,0.12);'>
+            <p style='margin:0;font-size:0.9rem;color:#cbd5e1;'>Signed in as</p>
+            <h2 style='margin:0.45rem 0 0 0;font-size:1.85rem;color:#ffffff;'>{auth.current_user()}</h2>
         </div>
         """,
         unsafe_allow_html=True,
