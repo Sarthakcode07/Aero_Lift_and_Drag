@@ -176,6 +176,7 @@ def _auth_page_style() -> str:
             border-radius: 0.85rem !important;
         }
 
+        .stTextInput>label,
         .stTextInput>div>label,
         .stTextInput>div>div {
             color: #f8fafc !important;
