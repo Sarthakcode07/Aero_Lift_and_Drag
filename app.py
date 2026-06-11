@@ -5,24 +5,12 @@ from aero_dashboard.app_main import main as dashboard_main
 
 
 def main() -> None:
-    if auth.current_user() is None:
-        st.markdown("# Welcome to the Aero Dashboard")
-        st.markdown("Click the button below to sign in and access the simulator.")
-
-        if st.button("Sign in"):
-            # Immediately continue as guest and show dashboard
-            st.session_state["user"] = "guest"
-            st.session_state["show_signin"] = False
-            st.experimental_rerun()
-
-        if st.session_state.get("show_signin"):
-            auth.render_signin_card()
-
+    if not auth.require_login():
         return
 
     if st.sidebar.button("Sign out"):
         auth.sign_out()
-        return
+        st.experimental_rerun()
 
     dashboard_main()
 

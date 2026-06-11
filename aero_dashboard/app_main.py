@@ -11,22 +11,44 @@ def main() -> None:
         layout="wide",
     )
 
-    if auth.current_user() is None:
-        st.markdown("# Access Restricted")
-        st.markdown("Please sign in to access the aerodynamic simulator.")
-        if st.button("Sign in", key="page_signin"):
-            # Immediately continue as guest and show dashboard
-            st.session_state["user"] = "guest"
-            st.session_state["show_signin"] = False
-            st.experimental_rerun()
-
-        if st.session_state.get("show_signin"):
-            auth.render_signin_card()
-
+    if not auth.require_login():
         return
 
     # inject styling
     st.markdown(visuals._style_axes.__doc__ or "", unsafe_allow_html=True)
+    # NOTE: we still call visuals functions directly for markup
+    visuals_apply = getattr(visuals, 'apply_aerospace_theme', None)
+    if visuals_apply:
+        visuals_apply()
+
+    user_profile = auth.user_session_profile()
+    st.markdown(
+        f"""
+        <div style="font-family:{visuals.FONT_STACK};padding:1rem 0 0 0;">
+            <div style="background: linear-gradient(135deg, rgba(59,130,246,0.18), rgba(37,99,235,0.08));
+                border: 1px solid rgba(148, 163, 184, 0.16); border-radius: 18px; padding: 1.35rem;
+                margin-bottom: 1.5rem; color: {visuals.TEXT_WHITE};">
+                <p style="margin:0;font-size:1.25rem;font-weight:600;">Welcome back, {user_profile.get('username', 'Pilot')}!</p>
+                <p style="margin:0.4rem 0 0; color: #cbd5e1; font-size:0.95rem;">Session started: {user_profile.get('session_started')}</p>
+                <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap:1rem; margin-top:1rem;">
+                    <div style="background: rgba(255,255,255,0.05); border-radius: 16px; padding: 0.95rem;">
+                        <p style="margin:0;font-size:0.78rem;text-transform:uppercase;color:#94a3b8;letter-spacing:0.12em;">Recent project</p>
+                        <p style="margin:0.5rem 0 0; font-size:1rem; font-weight:700;">{user_profile.get('recent_project')}</p>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.05); border-radius: 16px; padding: 0.95rem;">
+                        <p style="margin:0;font-size:0.78rem;text-transform:uppercase;color:#94a3b8;letter-spacing:0.12em;">Role</p>
+                        <p style="margin:0.5rem 0 0; font-size:1rem; font-weight:700;">{user_profile.get('user_tier')}</p>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.05); border-radius: 16px; padding: 0.95rem;">
+                        <p style="margin:0;font-size:0.78rem;text-transform:uppercase;color:#94a3b8;letter-spacing:0.12em;">Working zone</p>
+                        <p style="margin:0.5rem 0 0; font-size:1rem; font-weight:700;">{user_profile.get('user_zone')}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
     # NOTE: we still call visuals functions directly for markup
     visuals_apply = getattr(visuals, 'apply_aerospace_theme', None)
     if visuals_apply:
