@@ -11,51 +11,54 @@ def main() -> None:
         layout="wide",
     )
 
-    if not auth.require_login():
+    if not auth.is_authenticated():
+        st.markdown("# Access Restricted")
+        st.markdown("Please sign in to access the aerodynamic simulator.")
+        if st.session_state.get("show_signin", True):
+            auth.render_signin_card()
         return
 
-    # inject styling
-    st.markdown(visuals._style_axes.__doc__ or "", unsafe_allow_html=True)
-    # NOTE: we still call visuals functions directly for markup
-    visuals_apply = getattr(visuals, 'apply_aerospace_theme', None)
-    if visuals_apply:
-        visuals_apply()
-
-    user_profile = auth.user_session_profile()
+    profile = auth.get_user_profile(auth.current_user())
+    st.markdown(
+        visuals.section_heading("Pilot overview"),
+        unsafe_allow_html=True,
+    )
     st.markdown(
         f"""
-        <div style="font-family:{visuals.FONT_STACK};padding:1rem 0 0 0;">
-            <div style="background: linear-gradient(135deg, rgba(59,130,246,0.18), rgba(37,99,235,0.08));
-                border: 1px solid rgba(148, 163, 184, 0.16); border-radius: 18px; padding: 1.35rem;
-                margin-bottom: 1.5rem; color: {visuals.TEXT_WHITE};">
-                <p style="margin:0;font-size:1.25rem;font-weight:600;">Welcome back, {user_profile.get('username', 'Pilot')}!</p>
-                <p style="margin:0.4rem 0 0; color: #cbd5e1; font-size:0.95rem;">Session started: {user_profile.get('session_started')}</p>
-                <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap:1rem; margin-top:1rem;">
-                    <div style="background: rgba(255,255,255,0.05); border-radius: 16px; padding: 0.95rem;">
-                        <p style="margin:0;font-size:0.78rem;text-transform:uppercase;color:#94a3b8;letter-spacing:0.12em;">Recent project</p>
-                        <p style="margin:0.5rem 0 0; font-size:1rem; font-weight:700;">{user_profile.get('recent_project')}</p>
-                    </div>
-                    <div style="background: rgba(255,255,255,0.05); border-radius: 16px; padding: 0.95rem;">
-                        <p style="margin:0;font-size:0.78rem;text-transform:uppercase;color:#94a3b8;letter-spacing:0.12em;">Role</p>
-                        <p style="margin:0.5rem 0 0; font-size:1rem; font-weight:700;">{user_profile.get('user_tier')}</p>
-                    </div>
-                    <div style="background: rgba(255,255,255,0.05); border-radius: 16px; padding: 0.95rem;">
-                        <p style="margin:0;font-size:0.78rem;text-transform:uppercase;color:#94a3b8;letter-spacing:0.12em;">Working zone</p>
-                        <p style="margin:0.5rem 0 0; font-size:1rem; font-weight:700;">{user_profile.get('user_zone')}</p>
-                    </div>
-                </div>
+        <div style='display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:1.5rem;'>
+            <div style='flex:1;min-width:260px;padding:1.25rem;border-radius:16px;
+                background:rgba(255,255,255,0.05);border:1px solid rgba(148,163,184,0.12);'>
+                <p style='margin:0;font-size:0.9rem;color:#cbd5e1;'>Welcome back,</p>
+                <h2 style='margin:0.45rem 0 0 0;font-size:1.85rem;color:#ffffff;'>{profile['display_name']}</h2>
+                <p style='margin:0.25rem 0 0 0;color:#94a3b8;'>{profile['summary']}</p>
+            </div>
+            <div style='flex:1;min-width:220px;padding:1.25rem;border-radius:16px;
+                background:rgba(255,255,255,0.05);border:1px solid rgba(148,163,184,0.12);'>
+                <p style='margin:0 0 0.5rem 0;font-size:0.75rem;color:#cbd5e1;text-transform:uppercase;letter-spacing:0.14em;'>Pilot alias</p>
+                <p style='margin:0;font-size:1.2rem;color:#ffffff;font-weight:700;'>{profile['pilot_alias']}</p>
+                <p style='margin:0.85rem 0 0 0;font-size:0.75rem;color:#94a3b8;'>Preferred aircraft</p>
+                <p style='margin:0.15rem 0 0 0;font-size:1rem;color:#ffffff;font-weight:600;'>{profile['preferred_aircraft']}</p>
+            </div>
+            <div style='flex:1;min-width:220px;padding:1.25rem;border-radius:16px;
+                background:rgba(255,255,255,0.05);border:1px solid rgba(148,163,184,0.12);'>
+                <p style='margin:0 0 0.5rem 0;font-size:0.75rem;color:#cbd5e1;text-transform:uppercase;letter-spacing:0.14em;'>Session status</p>
+                <p style='margin:0;font-size:1rem;color:#ffffff;font-weight:700;'>Recent: {profile['recent_session']}</p>
+                <p style='margin:0.85rem 0 0 0;font-size:0.75rem;color:#94a3b8;'>Saved presets</p>
+                <p style='margin:0.15rem 0 0 0;font-size:1rem;color:#ffffff;font-weight:600;'>{profile['saved_presets']}</p>
             </div>
         </div>
         """,
         unsafe_allow_html=True,
     )
+    # inject styling
+    st.markdown(visuals._style_axes.__doc__ or "", unsafe_allow_html=True)
     # NOTE: we still call visuals functions directly for markup
     visuals_apply = getattr(visuals, 'apply_aerospace_theme', None)
-    if visuals_apply:
+    if callable(visuals_apply):
         visuals_apply()
 
     site_header = getattr(visuals, 'site_header', None)
-    if site_header:
+    if callable(site_header):
         site_header()
 
     # Top-right Sign in / Switch user button
