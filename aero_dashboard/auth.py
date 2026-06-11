@@ -227,11 +227,32 @@ def render_signin_card() -> None:
     )
 
     st.markdown('<div class="auth-card">', unsafe_allow_html=True)
-    st.markdown('<h1>Welcome to Aero control</h1>', unsafe_allow_html=True)
-    st.markdown(
-        '<p style="margin:0 0 1.5rem 0; color: #ffffff;">Use secure access to unlock aerodynamic presets, personalized mission data, and simulator controls.</p>',
-        unsafe_allow_html=True,
-    )
+
+    if auth_view == "Sign up":
+        st.markdown(
+            """
+            <div style="display:flex;align-items:center;gap:0.9rem;margin-bottom:1.25rem;">
+                <div style="width:56px;height:56px;border-radius:18px;background:linear-gradient(135deg,#60a5fa,#38bdf8);display:flex;align-items:center;justify-content:center;box-shadow:0 18px 34px rgba(56,189,248,0.18);">
+                    <span style="font-size:1.35rem;font-weight:800;color:#ffffff;">A</span>
+                </div>
+                <div>
+                    <p style="margin:0;font-size:0.8rem;font-weight:700;text-transform:uppercase;letter-spacing:0.14em;color:#93c5fd;">Aero Lift & Drag</p>
+                    <h1 style="margin:0.25rem 0 0 0;font-size:1.9rem;color:#ffffff;">Create your pilot workspace</h1>
+                </div>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+        st.markdown(
+            '<p style="margin:0 0 1.5rem 0; color: #dbeafe; line-height:1.6rem;">Build your account to save aircraft presets, track flight sessions, and access a more personalized aerodynamic simulator experience.</p>',
+            unsafe_allow_html=True,
+        )
+    else:
+        st.markdown('<h1>Welcome to Aero control</h1>', unsafe_allow_html=True)
+        st.markdown(
+            '<p style="margin:0 0 1.5rem 0; color: #ffffff;">Use secure access to unlock aerodynamic presets, personalized mission data, and simulator controls.</p>',
+            unsafe_allow_html=True,
+        )
 
     if auth_view == "Sign in":
         with st.form("signin_form"):
