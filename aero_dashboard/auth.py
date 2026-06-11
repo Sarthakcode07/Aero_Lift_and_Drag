@@ -172,8 +172,10 @@ def _auth_page_style() -> str:
             margin-top: 1rem;
         }
 
-        .stButton>button {
+        .auth-card .stButton>button,
+        .auth-card .stButton>button span {
             border-radius: 0.85rem !important;
+            color: #000000 !important;
         }
 
         .stTextInput>label,
