@@ -120,7 +120,13 @@ def _auth_page_style() -> str:
         .auth-card label,
         .auth-card .stMarkdown,
         .auth-card .stTextInput,
-        .auth-card .stCheckbox {
+        .auth-card .stCheckbox,
+        .stRadio label,
+        .stRadio div,
+        .stRadio span,
+        .stCheckbox label,
+        .stCheckbox div,
+        .stCheckbox span {
             color: #f8fafc !important;
         }
 
@@ -143,9 +149,11 @@ def _auth_page_style() -> str:
         }
 
         .auth-tab-active {
-            background: rgba(59, 130, 246, 0.24);
-            border-color: rgba(59, 130, 246, 0.32);
-            box-shadow: 0 12px 26px rgba(59, 130, 246, 0.12);
+            background: rgba(59, 130, 246, 0.45);
+            border-color: rgba(59, 130, 246, 0.56);
+            color: #ffffff !important;
+            box-shadow: 0 18px 34px rgba(59, 130, 246, 0.18);
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
         }
 
         .auth-small-link {
@@ -169,14 +177,21 @@ def _auth_page_style() -> str:
         }
 
         .stTextInput>div>label,
-        .stTextInput>div>div,
-        .stTextInput input,
-        .stTextInput>div>div>input {
+        .stTextInput>div>div {
             color: #f8fafc !important;
         }
 
-        .stTextInput input::placeholder {
-            color: rgba(248, 250, 252, 0.6) !important;
+        .stTextInput input,
+        .stTextInput>div>div>input,
+        .stTextArea textarea,
+        .stNumberInput input,
+        .stSelectbox select {
+            color: #000000 !important;
+        }
+
+        .stTextInput input::placeholder,
+        .stTextArea textarea::placeholder {
+            color: rgba(15, 23, 42, 0.5) !important;
         }
     </style>
     """
@@ -211,7 +226,7 @@ def render_signin_card() -> None:
     st.markdown('<div class="auth-card">', unsafe_allow_html=True)
     st.markdown('<h1>Welcome to Aero control</h1>', unsafe_allow_html=True)
     st.markdown(
-        '<p style="margin:0 0 1.5rem 0; color: #cbd5e1;">Use secure access to unlock aerodynamic presets, personalized mission data, and simulator controls.</p>',
+        '<p style="margin:0 0 1.5rem 0; color: #ffffff;">Use secure access to unlock aerodynamic presets, personalized mission data, and simulator controls.</p>',
         unsafe_allow_html=True,
     )
 
