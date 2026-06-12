@@ -1,4 +1,5 @@
 import streamlit as st
+from aero_dashboard import firebase_config
 
 
 def _auth_users() -> dict[str, str]:
@@ -22,6 +23,8 @@ def _auth_check(username: str, password: str) -> bool:
 
 def _register_user(username: str, password: str) -> None:
     st.session_state.setdefault("mock_users", {})[username] = password
+    # Attempt to save to Firebase (non-blocking)
+    firebase_config.save_user_profile(username, metadata={"password_hash": hash(password)})
 
 
 def current_user() -> str | None:
@@ -231,20 +234,17 @@ def render_signin_card() -> None:
     if auth_view == "Sign up":
         st.markdown(
             """
-            <div style="display:flex;align-items:center;gap:0.9rem;margin-bottom:1.25rem;">
-                <div style="width:56px;height:56px;border-radius:18px;background:linear-gradient(135deg,#60a5fa,#38bdf8);display:flex;align-items:center;justify-content:center;box-shadow:0 18px 34px rgba(56,189,248,0.18);">
-                    <span style="font-size:1.35rem;font-weight:800;color:#ffffff;">A</span>
+            <div style="display:flex;align-items:center;gap:1rem;flex-wrap:wrap;margin-bottom:1.5rem;">
+                <div style="width:68px;height:68px;border-radius:1rem;background:linear-gradient(135deg,#60a5fa,#38bdf8);display:flex;align-items:center;justify-content:center;box-shadow:0 22px 40px rgba(56,189,248,0.22);">
+                    <span style="font-size:1.75rem;font-weight:800;color:#ffffff;">A</span>
                 </div>
-                <div>
+                <div style="min-width:220px;flex:1;">
                     <p style="margin:0;font-size:0.8rem;font-weight:700;text-transform:uppercase;letter-spacing:0.14em;color:#93c5fd;">Aero Lift & Drag</p>
-                    <h1 style="margin:0.25rem 0 0 0;font-size:1.9rem;color:#ffffff;">Create your pilot workspace</h1>
+                    <h1 style="margin:0.35rem 0 0 0;font-size:2rem;color:#ffffff;line-height:1.1;">Create your pilot workspace</h1>
+                    <p style="margin:0.75rem 0 0 0; color: #dbeafe; line-height:1.7rem; max-width:680px;">Build your account to save aircraft presets, track flight sessions, and access a more personalized aerodynamic simulator experience.</p>
                 </div>
             </div>
             """,
-            unsafe_allow_html=True,
-        )
-        st.markdown(
-            '<p style="margin:0 0 1.5rem 0; color: #dbeafe; line-height:1.6rem;">Build your account to save aircraft presets, track flight sessions, and access a more personalized aerodynamic simulator experience.</p>',
             unsafe_allow_html=True,
         )
     else:
@@ -276,6 +276,8 @@ def render_signin_card() -> None:
                 if ok:
                     st.session_state["user"] = username.strip()
                     st.session_state["remember_me"] = remember
+                    # Log session to Firebase
+                    firebase_config.save_user_session(username.strip(), {"action": "signin", "remember": remember})
                     st.success(f"Signed in as {st.session_state['user']}")
                     st.experimental_rerun()
                 else:
@@ -314,6 +316,8 @@ def render_signin_card() -> None:
                 _register_user(username.strip(), password)
                 st.session_state["user"] = username.strip()
                 st.session_state["remember_me"] = remember
+                # Log new signup to Firebase
+                firebase_config.save_user_session(username.strip(), {"action": "signup", "remember": remember})
                 st.success(f"Account created for {username.strip()}. You are now signed in.")
                 st.experimental_rerun()
 
